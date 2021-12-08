@@ -1,7 +1,5 @@
 package api;
 
-import java.util.HashMap;
-
 public class Edge_Data implements EdgeData{
     public int _src;
     public double _weight;
