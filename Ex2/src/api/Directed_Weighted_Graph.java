@@ -14,11 +14,9 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
         this._list = new HashMap<>(e);
 
     }
-@Override
     public HashMap<Integer, NodeData> get_nodes() {
         return _nodes;
     }
-@Override
     public HashMap<Integer, HashMap<Integer, EdgeData>> get_list() {
         return _list;
     }
