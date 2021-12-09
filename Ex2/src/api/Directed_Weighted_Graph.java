@@ -2,11 +2,26 @@ package api;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 
 public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public HashMap<Integer, NodeData> _nodes;
+    public HashMap<Integer, EdgeData> _edges;
     public HashMap<Integer, HashMap<Integer, EdgeData>> _list;
+
+
+    public Directed_Weighted_Graph(HashMap<Integer, NodeData> n, HashMap<Integer, HashMap<Integer, EdgeData>> e) {
+        this._nodes = new HashMap<>(n);
+        this._list = new HashMap<>(e);
+
+    }
+@Override
+    public HashMap<Integer, NodeData> get_nodes() {
+        return _nodes;
+    }
+@Override
+    public HashMap<Integer, HashMap<Integer, EdgeData>> get_list() {
+        return _list;
+    }
 
     @Override
     public NodeData getNode(int key) {
@@ -31,28 +46,35 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<NodeData> nodeIter() {
-        return null;
+        Iterator<NodeData> nodes = _nodes.values().iterator();
+        return nodes;
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return null;
+        Iterator<EdgeData> edge = _edges.values().iterator();
+        return edge;
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return null;
+        Iterator<EdgeData> edge = _list.get(node_id).values().iterator();
+        return edge;
     }
 
     @Override
     public NodeData removeNode(int key) {
         NodeData n = _nodes.get(key);
-        if (_nodes.containsKey(key)){ _nodes.remove(key); }
-        if (_list.containsKey(key)){ _list.remove(key); }
+        if (_nodes.containsKey(key)) {
+            _nodes.remove(key);
+        }
+        if (_list.containsKey(key)) {
+            _list.remove(key);
+        }
         Object[] keys = new Object[_list.size()];
         keys = _list.keySet().toArray();
-        for (int i=0; i<_list.size(); i++){
-            if (_list.get(keys[i]).containsKey(key)){
+        for (int i = 0; i < _list.size(); i++) {
+            if (_list.get(keys[i]).containsKey(key)) {
                 _list.get((keys[i])).remove(key);
             }
         }
@@ -62,7 +84,9 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     @Override
     public EdgeData removeEdge(int src, int dest) {
         EdgeData e = _list.get(src).get(dest);
-        if (_list.get(src).containsKey(dest)){ _list.get(src).remove(dest); }
+        if (_list.get(src).containsKey(dest)) {
+            _list.get(src).remove(dest);
+        }
         return e;
     }
 
@@ -73,7 +97,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public int edgeSize() {
-        return 0;
+        return _edges.size();
     }
 
     @Override

@@ -1,26 +1,42 @@
 package api;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGraphAlgorithms {
+    public DirectedWeightedGraph _g;
+
     @Override
     public void init(DirectedWeightedGraph g) {
-
+        this._g = new Directed_Weighted_Graph(g.get_nodes(), g.get_list());
     }
 
     @Override
     public DirectedWeightedGraph getGraph() {
-        return null;
+        return _g;
     }
 
     @Override
     public DirectedWeightedGraph copy() {
-        return null;
+        DirectedWeightedGraph g = new Directed_Weighted_Graph(_g.get_nodes(), _g.get_list());
+        return g;
     }
 
     @Override
     public boolean isConnected() {
+        int n = _g.nodeSize();
+
+        boolean[] vis1 = new boolean[n];
+        boolean[] vis2 = new boolean[n];
+        Arrays.fill(vis1, false);
+        Arrays.fill(vis2, false);
+        for (int i = 0; i < n; i++) {
+
+        }
+        // Call for correct direction
+
         return false;
+
     }
 
     @Override
