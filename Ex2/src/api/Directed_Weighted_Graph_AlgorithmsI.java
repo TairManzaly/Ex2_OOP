@@ -32,7 +32,7 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
     @Override
     public DirectedWeightedGraph copy() {
-        DirectedWeightedGraph g = _g;
+        DirectedWeightedGraph g = new Directed_Weighted_Graph(_nodes,_list);
         return g;
     }
 
