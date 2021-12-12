@@ -7,11 +7,13 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public HashMap<Integer, NodeData> _nodes;
     public HashMap<Integer, EdgeData> _edges;
     public HashMap<Integer, HashMap<Integer, EdgeData>> _list;
+    public int MC = 0;
 
 
     public Directed_Weighted_Graph(HashMap<Integer, NodeData> n, HashMap<Integer, HashMap<Integer, EdgeData>> e) {
-        this._nodes = new HashMap<>(n);
-        this._list = new HashMap<>(e);
+        this._nodes = n;
+        this._list = e;
+
 
     }
     public HashMap<Integer, NodeData> get_nodes() {
@@ -34,12 +36,15 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     @Override
     public void addNode(NodeData n) {
         _nodes.put(n.getKey(), n);
+        MC++;
+
     }
 
     @Override
     public void connect(int src, int dest, double w) {
         EdgeData e = new Edge_Data(src, w, dest);
         _list.get(src).put(dest, e);
+        MC++;
     }
 
     @Override
@@ -76,6 +81,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
                 _list.get((keys[i])).remove(key);
             }
         }
+        MC++;
         return n;
     }
 
@@ -85,6 +91,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
         if (_list.get(src).containsKey(dest)) {
             _list.get(src).remove(dest);
         }
+        MC++;
         return e;
     }
 
@@ -100,6 +107,6 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public int getMC() {
-        return 0;
+        return MC;
     }
 }

@@ -5,16 +5,21 @@ import java.util.List;
 
 public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGraphAlgorithms {
     public DirectedWeightedGraph _g;
+    public HashMap<Integer, NodeData> _nodes;
+    public HashMap<Integer, EdgeData> _edges;
+    public HashMap<Integer, HashMap<Integer, EdgeData>> _list;
 
     @Override
     public void init(DirectedWeightedGraph g) {
-        HashMap<Integer, NodeData> _nodes= new HashMap<>();
-        HashMap<Integer, EdgeData> _edges = new HashMap<>();
-        HashMap<Integer, HashMap<Integer, EdgeData>> _list = new HashMap<>();
+
         int nlen = g.nodeSize();
         int elen = g.edgeSize();
         for (int i = 0; i < nlen; i++) {
            _nodes.put(i,g.getNode(i));
+           _edges.put(i,g.getEdge(i,i+1));
+        }
+        for (int i = 0; i < nlen; i++) {
+            _list.put(i,_edges);
         }
 //        for (int i = 0; i < elen; i++) {
 //            _edges.put(i,g.getEdge(i));
@@ -72,8 +77,8 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        NodeData srcd = _g.getNode(src);
-        NodeData destd = _g.getNode(dest);
+//        NodeData srcd = _g.getNode(src);
+//        NodeData destd = _g.getNode(dest);
         double minsum = 0, sum = 0;
 
         return 0;
@@ -96,11 +101,17 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
     @Override
     public boolean save(String file) {
+
         return false;
     }
 
+
+
     @Override
     public boolean load(String file) {
+
+
+        
         return false;
     }
 }
