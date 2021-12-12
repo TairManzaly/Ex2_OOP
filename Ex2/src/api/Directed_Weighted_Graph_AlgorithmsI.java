@@ -20,9 +20,9 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
             }
             _list.put(i,_edges);
 
-//        for (int i = 0; i < elen; i++) {
-//            _edges.put(i,g.getEdge(i));
+
         }
+        _g = new Directed_Weighted_Graph(_nodes,_list);
     }
 
     @Override
