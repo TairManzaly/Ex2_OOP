@@ -13,17 +13,16 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
     public void init(DirectedWeightedGraph g) {
 
         int nlen = g.nodeSize();
-        int elen = g.edgeSize();
         for (int i = 0; i < nlen; i++) {
            _nodes.put(i,g.getNode(i));
-           _edges.put(i,g.getEdge(i,i+1));
-        }
-        for (int i = 0; i < nlen; i++) {
+            for (int j = 0; j < g.edgeSize(); j++) {
+                _edges.put(i,g.getEdge(i,j));
+            }
             _list.put(i,_edges);
-        }
+
 //        for (int i = 0; i < elen; i++) {
 //            _edges.put(i,g.getEdge(i));
-//        }
+        }
     }
 
     @Override
