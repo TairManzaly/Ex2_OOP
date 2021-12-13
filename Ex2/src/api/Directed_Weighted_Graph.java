@@ -74,7 +74,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
                 _edges.add(_list.get(keys[i]).get(k.get(i)[j]));
             }
         }
-        Iterator<EdgeData> edge = _edges.values().iterator();
+        Iterator<EdgeData> edge = _edges.iterator();
         return edge;
     }
 
