@@ -1,26 +1,21 @@
 package api;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public HashMap<Integer, NodeData> _nodes;
+    public HashMap<Integer, EdgeData> _edges;
     public HashMap<Integer, HashMap<Integer, EdgeData>> _list;
     public int MC = 0;
-    public int _edges_size = 0;
 
 
     public Directed_Weighted_Graph(HashMap<Integer, NodeData> n, HashMap<Integer, HashMap<Integer, EdgeData>> e) {
         this._nodes = n;
         this._list = e;
-        Object[] keys = new Object[_list.size()];
-        keys = _list.keySet().toArray();
-        for (int i = 0; i < _list.size(); i++) {
-            _edges_size += _list.get(keys[i]).size();
-        }
-    }
 
+
+    }
     public HashMap<Integer, NodeData> get_nodes() {
         return _nodes;
     }
@@ -42,6 +37,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public void addNode(NodeData n) {
         _nodes.put(n.getKey(), n);
         MC++;
+
     }
 
     @Override
@@ -49,7 +45,6 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
         EdgeData e = new Edge_Data(src, w, dest);
         _list.get(src).put(dest, e);
         MC++;
-        _edges_size++;
     }
 
     @Override
@@ -60,21 +55,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        ArrayList<EdgeData> _edges = null;
-        Object[] keys = new Object[_list.size()];
-        keys = _list.keySet().toArray();
-        ArrayList<Object[]> k = null;
-        for (int i = 0; i < _list.size(); i++) {
-            Object[] e = new Object[_list.get(keys[i]).size()];
-            e = _list.get(keys[i]).keySet().toArray();
-            k.add(e);
-        }
-        for (int i = 0; i < keys.length; i++) {
-            for (int j=0; j<k.get(i).length; j++){
-                _edges.add(_list.get(keys[i]).get(k.get(i)[j]));
-            }
-        }
-        Iterator<EdgeData> edge = _edges.iterator();
+        Iterator<EdgeData> edge = _edges.values().iterator();
         return edge;
     }
 
@@ -98,10 +79,9 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
         for (int i = 0; i < _list.size(); i++) {
             if (_list.get(keys[i]).containsKey(key)) {
                 _list.get((keys[i])).remove(key);
-                _edges_size--;
-                MC++;
             }
         }
+        MC++;
         return n;
     }
 
@@ -110,9 +90,8 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
         EdgeData e = _list.get(src).get(dest);
         if (_list.get(src).containsKey(dest)) {
             _list.get(src).remove(dest);
-            _edges_size--;
-            MC++;
         }
+        MC++;
         return e;
     }
 
@@ -123,7 +102,7 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public int edgeSize() {
-        return _edges_size;
+        return _edges.size();
     }
 
     @Override
