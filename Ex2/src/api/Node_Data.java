@@ -1,26 +1,26 @@
 package api;
 
-public class Node_Data implements NodeData {
-    int ID;
-    double x;
-    double y;
-    double z;
-    double weight;
-    int tag;
-    String data;
+import java.util.HashMap;
 
-    public Node_Data(int a, double x, double y, double z, String d,double w, int t) {
-        this.data = d;
-        this.ID = a;
+public class Node_Data implements NodeData {
+    public HashMap<Integer, String> nodes = new HashMap<>();
+    public int ID;
+    public double x;
+    public double y;
+    public double z;
+    public double weight;
+    public int tag =0;
+    public String data;
+
+    public Node_Data(int ID, double x, double y, double z) {
+
         this.x = x;
         this.y = y;
         this.z = z;
-        this.weight = w;
-        this.tag = tag;
-
-
+        this.ID = ID;
 
     }
+
 
     @Override
     public int getKey() {
@@ -29,8 +29,8 @@ public class Node_Data implements NodeData {
 
     @Override
     public GeoLocation getLocation() {
-        GeoLocation g = new Geo_LocationI(this.x,this.y,this.z);
-        return  g;
+        GeoLocation g = new Geo_LocationI(this.x, this.y, this.z);
+        return g;
     }
 
     @Override
