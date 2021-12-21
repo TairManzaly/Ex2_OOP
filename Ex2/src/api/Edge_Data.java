@@ -1,18 +1,27 @@
 package api;
 
-public class Edge_Data implements EdgeData{
+public class Edge_Data implements EdgeData {
+
     public int _src;
     public double _weight;
     public int _dest;
     public String _info;
     public int _tag;
+    public Edge_Data(){
+        this._src = 0;
+        this._dest = 0;
+        this._weight = 0;
+        this._tag = 0;
+        this._info = "";
+    }
 
-    public Edge_Data(int src, double weight, int dest){
+    public Edge_Data(int src, double weight, int dest) {
         this._src = src;
         this._weight = weight;
         this._dest = dest;
         this._info = "";
         this._tag = 0;
+
     }
 
     @Override
