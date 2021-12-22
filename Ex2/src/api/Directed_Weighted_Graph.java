@@ -1,10 +1,14 @@
 package api;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public HashMap<Integer, NodeData> _nodes;
@@ -70,7 +74,14 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     @Override
     public void connect(int src, int dest, double w) {
         EdgeData e = new Edge_Data(src, w, dest);
-        _list.get(src).put(dest, e);
+        if(_list.get(src)!=null){
+            _list.get(src).put(dest, e);
+        }
+        else{
+            HashMap<Integer, EdgeData> ed = new HashMap<Integer, EdgeData>();
+            ed.put(dest, e);
+            _list.put(src,ed);
+        }
         MC++;
         _edges_size++;
     }
@@ -83,10 +94,10 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        ArrayList<EdgeData> _edges = null;
+        ArrayList<EdgeData> _edges = new ArrayList<EdgeData>();
         Object[] keys = new Object[_list.size()];
         keys = _list.keySet().toArray();
-        ArrayList<Object[]> k = null;
+        ArrayList<Object[]> k = new ArrayList<Object[]>();
         for (int i = 0; i < _list.size(); i++) {
             Object[] e = new Object[_list.get(keys[i]).size()];
             e = _list.get(keys[i]).keySet().toArray();
@@ -153,4 +164,5 @@ public class Directed_Weighted_Graph implements DirectedWeightedGraph {
     public int getMC() {
         return MC;
     }
+
 }
