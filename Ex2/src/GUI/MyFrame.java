@@ -88,6 +88,7 @@ public class MyFrame extends JFrame implements KeyListener, ActionListener {
         this.setVisible(true);
 
 
+
     }
 
     @Override
@@ -199,10 +200,6 @@ public class MyFrame extends JFrame implements KeyListener, ActionListener {
 
 
 
-        public static void main (String[]args){
-            MyFrame frame = new MyFrame(new Directed_Weighted_Graph_AlgorithmsI());
-            frame.setVisible(true);
-        }
 
 
 
