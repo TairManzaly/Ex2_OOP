@@ -17,7 +17,9 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
     public HashMap<Integer, NodeData> _nodes ;
     public HashMap<Integer, EdgeData> _edges;
     public HashMap<Integer, HashMap<Integer, EdgeData>> _list = new HashMap<>();
-
+public Directed_Weighted_Graph_AlgorithmsI(){
+        this._g = new Directed_Weighted_Graph(_nodes,_list);
+    }
     public Directed_Weighted_Graph_AlgorithmsI(Directed_Weighted_Graph g){
         this._g = g;
     }
