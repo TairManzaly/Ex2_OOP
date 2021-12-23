@@ -1,7 +1,10 @@
 package api;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 
 import org.json.simple.JSONArray;
@@ -11,26 +14,23 @@ import org.json.simple.parser.ParseException;
 
 public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGraphAlgorithms {
     public Directed_Weighted_Graph _g;
-    public HashMap<Integer, NodeData> _nodes;
+    public HashMap<Integer, NodeData> _nodes ;
     public HashMap<Integer, EdgeData> _edges;
-    public HashMap<Integer, HashMap<Integer, EdgeData>> _list;
+    public HashMap<Integer, HashMap<Integer, EdgeData>> _list = new HashMap<>();
 
-    @Override
-    public void init(DirectedWeightedGraph g) {
-        int nlen = g.nodeSize();
-        for (int i = 0; i < nlen; i++) {
-            _nodes.put(i, g.getNode(i));
-            for (int j = 0; j < g.edgeSize(); j++) {
-                _edges.put(i, g.getEdge(i, j));
-            }
-            _list.put(i, _edges);
-        }
-        _g = new Directed_Weighted_Graph(_nodes, _list);
+    public Directed_Weighted_Graph_AlgorithmsI(Directed_Weighted_Graph g){
+        this._g = g;
     }
 
     @Override
+    public void init(DirectedWeightedGraph g) {
+        this._g = (Directed_Weighted_Graph) g;
+    }
+
+
+    @Override
     public DirectedWeightedGraph getGraph() {
-        return _g;
+        return this._g;
     }
 
     @Override
@@ -96,16 +96,16 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
                 int k = current.getKey();
                 boolean first_pass = DFS((DirectedWeightedGraph) _g, current);
                 DirectedWeightedGraph trans = (Directed_Weighted_Graph) _g.trans();
-                Iterator<NodeData> transI = trans.nodeIter();
-                while (transI.hasNext()) {
-                    transI.next().setTag(0);
-
-                }
-                NodeData new_c = trans.getNode(k);
-                boolean second_pass = DFS(trans, new_c);
-                return first_pass && second_pass;
-
+//                Iterator<NodeData> transI = trans.nodeIter();
+//                while (transI.hasNext()) {
+//                    transI.next().setTag(0);
+                return first_pass;
             }
+//                NodeData new_c = trans.getNode(k);
+//                boolean second_pass = DFS(trans, new_c);
+
+
+
 
         } catch (ConcurrentModificationException e) {
             throw new RuntimeException();
@@ -126,45 +126,52 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
 
     private Queue<NodeData> Dijkstra(DirectedWeightedGraph g, NodeData start, NodeData dest) {
-        Stack<NodeData> Q = new Stack<>();
-        double[] dist = new double[_nodes.size()];
-        double[] prev = new double[_nodes.size()];
-        Queue<NodeData> S = null;
+        try {
+            Queue<Integer> Q = new PriorityQueue<>();
 
-        Q.add(start);
-        for (NodeData v : _nodes.values()
-        ) {
-            dist[v.getKey()] = Integer.MAX_VALUE;
-            prev[v.getKey()] = -1;
-            Q.add(v);
-        }
-        dist[start.getKey()] = 0;
+            double[] dist = new double[g.nodeSize()];
+            double[] prev = new double[g.nodeSize()];
+            Queue<NodeData> S = new PriorityQueue<>();
 
-        while (!Q.isEmpty()) {
-            NodeData u = Q.pop();
-            if (u == dest) break;
-
-            HashMap<Integer, EdgeData> e = _list.get(u);
-            for (EdgeData v : e.values()
-            ) {
-                double alt = dist[u.getKey()] + v.getWeight();
-                if (alt < dist[v.getDest()]) {
-                    dist[v.getDest()] = alt;
-                    prev[v.getDest()] = u.getKey();
+            Q.add(start.getKey());
+            for (int i = 0; i <g.nodeSize() ; i++) {
+                dist[i] = Integer.MAX_VALUE;
+                prev[i] = -1;
+                Q.add(g.nodeIter().next().getKey());
 
 
+            }
+
+            dist[start.getKey()] = 0;
+            double Weight = 0;
+            int u =0;
+            while (!Q.isEmpty()) {
+                u = Q.poll();
+                for (int v = 0; v < _g.nodeSize(); v++) {
+                    if (_g.getEdge(u, v) == null || Q.contains(v) == false) {
+                        continue;
+                    }
+                    Weight = dist[u] + _g.getEdge(u, v).getWeight();
+                    if (Weight < dist[v]) {
+                        dist[v] = Weight;
+                        prev[v] = u;
+
+
+                    }
+                }
+
+            }
+            NodeData i = _g.getNode(dest.getKey());
+            if (prev[i.getKey()] != -1 || dest == start) {
+                while (prev[i.getKey()] != -1) {
+                    S.add(i);
+                    i = _g.getNode((int) prev[i.getKey()]);
                 }
             }
-
+            return S;
+        } catch (RuntimeException e) {
+            return null;
         }
-        NodeData u = _nodes.get(dest);
-        if (prev[u.getKey()] != -1 || dest == start) {
-            while (prev[u.getKey()] != -1) {
-                S.add(u);
-                u = _nodes.get(prev[u.getKey()]);
-            }
-        }
-        return S;
     }
 //1  S ← empty sequence
 //2  u ← target
@@ -175,34 +182,45 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        Queue<NodeData> s = Dijkstra(_g, _nodes.get(src), _nodes.get(dest));
-        double sum = 0;
-        for (int i = 0; i < s.size() - 2; i++) {
-            NodeData d = s.poll();
-            NodeData e = s.poll();
-            sum += _g.getEdge(e.getKey(), d.getKey()).getWeight();
+        try {
+            Queue<NodeData> s = Dijkstra(_g, _g.getNode(src),_g.getNode(dest));
 
+            double sum = 0;
+            for (int i = 0; i < s.size() - 2; i++) {
+                NodeData d = s.poll();
+                NodeData e = s.poll();
+                sum += _g.getEdge(e.getKey(), d.getKey()).getWeight();
+
+            }
+            return sum;
+        } catch (RuntimeException e) {
+            return -1;
         }
-        return sum;
     }
-
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        List<NodeData> ans = null;
-        Queue<NodeData> s = Dijkstra(_g, _nodes.get(src), _nodes.get(dest));
-        for (NodeData a : s
-        ) {
-            ans.add(a);
-        }
+        try {
+            ArrayList<NodeData> ans = new ArrayList<>();
 
-        return ans;
+            Queue<NodeData> s = new PriorityQueue<>();
+            s = Dijkstra(_g, _g.getNode(src), _g.getNode(dest));
+            if (s !=null) {
+                for (NodeData a : s
+                ) {
+                    ans.add(a);
+                }
+            }
+            return ans;
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     @Override
     public NodeData center() {
-        if (!isConnected()) {
-            return null;
-        }
+//        if (!isConnected()) {
+//            return null;
+//        }
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         NodeData ans = null;
@@ -227,9 +245,9 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        if (!isConnected()) {
-            return null;
-        }
+//        if (!isConnected()) {
+//            return null;
+//        }
         List<Integer> citiesdata = new ArrayList<>();
         List<NodeData> result = new ArrayList<>();
         int same, place;
@@ -305,12 +323,12 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
             Iterator iEdges = edges.iterator();
             Iterator iNodes = nodes.iterator();
             Map node;
-            HashMap<Integer,NodeData> nodeHashMap = new HashMap<>();
-            while (iNodes.hasNext()){
+            HashMap<Integer, NodeData> nodeHashMap = new HashMap<>();
+            while (iNodes.hasNext()) {
                 node = (Map) iNodes.next();
                 String pos = (String) node.get("pos");
 
-                int id = (int) node.get("id");
+                int id = Integer.parseInt(Objects.toString(node.get("id")));
 
                 String[] p = pos.split(",");
 
@@ -318,24 +336,32 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
                 double y = Double.parseDouble(p[1]);
                 double z = Double.parseDouble(p[2]);
                 NodeData nodeData = new Node_Data(id, x, y, z);
-                nodeHashMap.put(id,nodeData);
+                nodeHashMap.put(id, nodeData);
 
             }
             Map edge;
             HashMap<Integer, EdgeData> edgeDataHashMap = new HashMap<>();
             HashMap<Integer, HashMap<Integer, EdgeData>> list = new HashMap<>();
-            while (iEdges.hasNext()){
+            while (iEdges.hasNext()) {
                 edge = (Map) iEdges.next();
-                int src = (int) edge.get("src");
+                int src = Integer.parseInt(Objects.toString(edge.get("src")));
 
                 double w = (double) edge.get("w");
 
-                int dest = (int) edge.get("dest");
+                int dest = Integer.parseInt(Objects.toString(edge.get("dest")));
                 EdgeData edgeData = new Edge_Data(src, w, dest);
-                edgeDataHashMap.put(src,edgeData);
-                list.put(src,edgeDataHashMap);
+                ((Node_Data) nodeHashMap.get(src)).addToList(edgeData);
+                //list.get(src).put(src,edgeData);
+                if(list.get(src)!=null){
+                    list.get(src).put(dest, edgeData);
+                }
+                else{
+                    HashMap<Integer, EdgeData> ed = new HashMap<Integer, EdgeData>();
+                    ed.put(dest, edgeData);
+                    list.put(src,ed);
+                }
             }
-            this._g = new Directed_Weighted_Graph(nodeHashMap,list);
+            this._g = new Directed_Weighted_Graph(nodeHashMap, list);
             return true;
 
         } catch (FileNotFoundException e) {
@@ -350,8 +376,5 @@ public class Directed_Weighted_Graph_AlgorithmsI implements DirectedWeightedGrap
         }
 
     }
-
-
-
 
 }
